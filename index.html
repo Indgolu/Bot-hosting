@@ -20,6 +20,15 @@
     <button onclick="showSignup()">Signup</button>
   </div>
 </header>
+  <div id="auth-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); justify-content:center; align-items:center;">
+  <div style="background:white; padding:20px; border-radius:10px; min-width:300px; text-align:center;">
+    <h2 id="modal-title">Login</h2>
+    <input id="email" type="email" placeholder="Email" style="margin:5px; padding:8px; width:90%"><br>
+    <input id="password" type="password" placeholder="Password" style="margin:5px; padding:8px; width:90%"><br>
+    <button onclick="authAction()">Submit</button>
+    <button onclick="closeModal()">Cancel</button>
+  </div>
+</div>
   <div class="flex min-h-screen">
     <!-- Sidebar -->
     <aside class="w-64 bg-gray-800 p-6 flex flex-col justify-between">
@@ -191,5 +200,44 @@
       mountButton('paypal-btn-3', 3);
       mountButton('paypal-btn-5', 5);
     }
-  </script></body>
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script>
+  const supabase = supabase.createClient(
+    "https://bnezmdpbnpbqxtujxndo.supabase.co", 
+    "process.env.SUPABASE_KEY"
+  );
+
+  let authMode = "login"; // or "signup"
+
+  function showLogin() {
+    authMode = "login";
+    document.getElementById("modal-title").innerText = "Login";
+    document.getElementById("auth-modal").style.display = "flex";
+  }
+
+  function showSignup() {
+    authMode = "signup";
+    document.getElementById("modal-title").innerText = "Signup";
+    document.getElementById("auth-modal").style.display = "flex";
+  }
+
+  function closeModal() {
+    document.getElementById("auth-modal").style.display = "none";
+  }
+
+  async function authAction() {
+    const email = document.getElementById("email").value;
+    const password = document.getElementById("password").value;
+
+    if (authMode === "signup") {
+      const { error } = await supabase.auth.signUp({ email, password });
+      if (error) alert(error.message);
+      else alert("Signup successful! Check your email.");
+    } else {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) alert(error.message);
+      else window.location.href = "/manage-servers.html"; // redirect after login
+    }
+  }
+</script></body>
 </html>
