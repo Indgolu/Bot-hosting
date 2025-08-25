@@ -202,10 +202,11 @@
     }
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
 <script>
-  const supabase = supabase.createClient(
-    "https://bnezmdpbnpbqxtujxndo.supabase.co", 
-    "process.env.SUPABASE_KEY"
-  );
+  import { createClient } from "@supabase/supabase-js";
+  const supabase = createClient(
+  process.env.NEXT_PUBLIC_SUPABASE_URL,
+  process.env.NEXT_PUBLIC_SUPABASE_KEY
+);
 
   let authMode = "login"; // or "signup"
 
